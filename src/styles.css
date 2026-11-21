@@ -126,7 +126,8 @@
   --glass-fill: linear-gradient(150deg, oklch(1 0 0 / 0.12), oklch(1 0 0 / 0.04) 50%, oklch(1 0 0 / 0.07));
   --glass-fill-strong: linear-gradient(150deg, oklch(0.26 0.035 262 / 0.78), oklch(0.17 0.03 262 / 0.82));
   --glass-stroke: oklch(1 0 0 / 0.16);
-  --glass-blur: 22px;
+  /* Blur kept razor-thin for performance; only the top bar, video banner and footer keep the full frost (see glass-bar). */
+  --glass-blur: 6px;
   --glass-highlight:
     inset 0 1px 0 0 oklch(1 0 0 / 0.28), inset 1px 0 0 0 oklch(1 0 0 / 0.08),
     inset 0 -1px 0 0 oklch(1 0 0 / 0.05), inset 0 0 24px -10px oklch(1 0 0 / 0.22);
@@ -195,7 +196,15 @@
 /* Denser glass for overlays (dialogs, menus, toasts) so text over busy content stays readable. */
 @utility glass-panel {
   background: var(--glass-fill-strong);
-  backdrop-filter: blur(28px) saturate(170%);
+  backdrop-filter: blur(10px) saturate(170%);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Full frost, reserved for the top bar, video banner frame and footer. */
+@utility glass-bar {
+  background: var(--glass-fill);
+  backdrop-filter: blur(22px) saturate(180%);
   border: 1px solid var(--glass-stroke);
   box-shadow: var(--glass-shadow);
 }
@@ -210,7 +219,7 @@
 /* Text fields: sunken glass with a soft inner shadow. */
 @utility glass-field {
   background: oklch(1 0 0 / 0.05);
-  backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(4px) saturate(150%);
   box-shadow: inset 0 1px 3px 0 oklch(0 0 0 / 0.28), inset 0 -1px 0 0 oklch(1 0 0 / 0.06);
 }
 

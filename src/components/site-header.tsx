@@ -10,7 +10,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
-      <div className="glass liquid-sheen relative mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl px-3 sm:h-16 sm:px-5">
+      <div className="glass-bar liquid-sheen relative mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl px-3 sm:h-16 sm:px-5">
         <Link to="/" className="group relative z-10 flex items-center gap-2.5">
           <InfinityMark
             className="h-7 w-12 transition-transform duration-500 group-hover:scale-110"
@@ -48,7 +48,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="mt-24 px-3 pb-4 sm:px-6">
-      <div className="glass mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 rounded-2xl px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:px-6">
+      <div className="glass-bar mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 rounded-2xl px-4 py-6 text-sm text-muted-foreground sm:flex-row sm:px-6">
         <p>
           <span className="font-display tracking-widest text-foreground">LYY&apos;TZY</span> · Multi
           Tools

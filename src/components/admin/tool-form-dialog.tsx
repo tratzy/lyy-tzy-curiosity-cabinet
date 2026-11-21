@@ -263,7 +263,7 @@ export function ToolFormDialog({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[92dvh] w-[calc(100vw-1.5rem)] max-w-2xl overflow-y-auto border-border bg-popover p-0 sm:rounded-2xl">
         <form onSubmit={save}>
-          <DialogHeader className="sticky top-0 z-10 border-b border-border bg-popover/95 px-5 py-4 text-left backdrop-blur">
+          <DialogHeader className="sticky top-0 z-10 border-b border-border bg-popover/95 px-5 py-4 text-left backdrop-blur-sm">
             <DialogTitle className="font-display tracking-wide">
               {isEdit ? "Edit Tool" : "Tambah Tool"}
             </DialogTitle>
@@ -484,7 +484,7 @@ export function ToolFormDialog({
             </label>
           </div>
 
-          <div className="sticky bottom-0 flex gap-2 border-t border-border bg-popover/95 px-5 py-4 backdrop-blur">
+          <div className="sticky bottom-0 flex gap-2 border-t border-border bg-popover/95 px-5 py-4 backdrop-blur-sm">
             <Button type="button" variant="glass" className="flex-1" onClick={onClose}>
               Batal
             </Button>

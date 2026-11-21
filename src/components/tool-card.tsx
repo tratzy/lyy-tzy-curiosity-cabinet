@@ -23,7 +23,7 @@ export function ToolCard({
     <Link
       to="/tool/$slug"
       params={{ slug: tool.slug }}
-      className="neon-border liquid-sheen group relative flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-gradient-card shadow-card backdrop-blur-xl backdrop-saturate-150 transition-transform duration-300 ease-out hover:-translate-y-1 focus-visible:outline-none animate-fade-up sm:rounded-2xl"
+      className="neon-border liquid-sheen group relative flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-gradient-card shadow-card backdrop-blur-sm backdrop-saturate-150 transition-transform duration-300 ease-out hover:-translate-y-1 focus-visible:outline-none animate-fade-up sm:rounded-2xl"
       style={{ animationDelay: `${Math.min(index, 12) * 45}ms` }}
     >
       <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gradient-neon opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-25" />
