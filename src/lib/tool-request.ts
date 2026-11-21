@@ -10,8 +10,14 @@ export type BodyType = (typeof BODY_TYPES)[number];
 export const RESPONSE_TYPES = ["auto", "json", "image", "video", "audio", "text"] as const;
 export type ResponseType = (typeof RESPONSE_TYPES)[number];
 
-export const PARAM_TYPES = ["text", "textarea", "number", "url", "select"] as const;
+export const PARAM_TYPES = ["text", "textarea", "number", "url", "select", "image"] as const;
 export type ParamType = (typeof PARAM_TYPES)[number];
+
+/** How an uploaded image reaches the tool: as a temporary link, or as the file itself. */
+export const IMAGE_SEND_MODES = ["url", "file"] as const;
+export type ImageSendMode = (typeof IMAGE_SEND_MODES)[number];
+
+export const IMAGE_MAX_BYTES = 10 * 1024 * 1024;
 
 export type ToolParam = {
   key: string;
@@ -21,7 +27,21 @@ export type ToolParam = {
   required?: boolean;
   options?: string[];
   default?: string;
+  /** Only for `image` params; defaults to "url". */
+  send_as?: ImageSendMode;
 };
+
+export function imageSendMode(param: Pick<ToolParam, "send_as">): ImageSendMode {
+  return param.send_as === "file" ? "file" : "url";
+}
+
+/** Sending a file needs a request body, so GET/DELETE and query-only tools cannot do it. */
+export function canSendFiles(tool: { method: string; body_type: string }): boolean {
+  const method = (tool.method || "GET").toUpperCase();
+  return method !== "GET" && method !== "DELETE" && tool.body_type !== "query";
+}
+
+export type UpstreamFile = { blob: Blob; filename: string };
 
 export type RequestableTool = {
   method: string;
@@ -39,6 +59,7 @@ export function buildUpstreamRequest(
   tool: RequestableTool,
   values: Record<string, string>,
   secretHeaders: Record<string, string> = {},
+  files: Record<string, UpstreamFile> = {},
 ): { url: string; init: RequestInit } {
   if (!tool.endpoint) throw new Error("Tool ini belum punya endpoint");
 
@@ -62,7 +83,15 @@ export function buildUpstreamRequest(
   const init: RequestInit = { method, headers, redirect: "follow" };
 
   const sendAsQuery = method === "GET" || method === "DELETE" || tool.body_type === "query";
-  if (sendAsQuery) {
+  const fileEntries = Object.entries(files);
+  if (fileEntries.length > 0) {
+    if (sendAsQuery) throw new Error("Tool ini tidak bisa menerima file");
+    // multipart/form-data: fetch sets the Content-Type boundary itself.
+    const form = new FormData();
+    for (const [key, value] of rest) form.append(key, value);
+    for (const [key, file] of fileEntries) form.append(key, file.blob, file.filename);
+    init.body = form;
+  } else if (sendAsQuery) {
     for (const [key, value] of rest) url.searchParams.set(key, value);
   } else if (tool.body_type === "form") {
     headers["Content-Type"] = "application/x-www-form-urlencoded";
