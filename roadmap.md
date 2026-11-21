@@ -21,3 +21,4 @@
 - [x] Animasi loading hidup saat tool berjalan (cincin berputar, status bergilir, timer)
 - [x] Hapus teks endpoint dan metode dari halaman publik
 - [x] Hasil tools modern: kartu teks utama, angka, daftar, gambar, audio — tanpa JSON mentah
+- [x] Tema kaca / liquid glass di seluruh web
