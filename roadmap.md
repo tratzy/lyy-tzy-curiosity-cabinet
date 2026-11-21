@@ -16,3 +16,8 @@
 - [x] Beranda: grid 3×3 (3 kolom, 9 tools per halaman) dengan navigasi halaman
 - [x] Kartu tool dengan card header (kategori + badge), body, dan footer; tampil rapat di HP
 - [x] Beranda: pencarian, filter kategori, dan statistik jumlah diganti kartu status 4 elemen (baterai, cuaca, jaringan, waktu WIB) dengan cincin progres
+- [x] Elemen baterai dirapikan (petir di dalam baterai, label "Mengisi" saat dicas)
+- [x] Latar belakang gambar custom dari panel admin (tab Latar, atur kegelapan)
+- [x] Animasi loading hidup saat tool berjalan (cincin berputar, status bergilir, timer)
+- [x] Hapus teks endpoint dan metode dari halaman publik
+- [x] Hasil tools modern: kartu teks utama, angka, daftar, gambar, audio — tanpa JSON mentah

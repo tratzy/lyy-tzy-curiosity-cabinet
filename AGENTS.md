@@ -38,4 +38,6 @@ use the editor.
 - Roles live in `public.user_roles`; the signup trigger grants `admin` only to the first account, and the UI hides registration once `admin_exists()` is true.
 - Tool icons are stored as Lucide icon names and rendered through `DynamicIcon`, which accepts PascalCase or kebab-case.
 - Home banner videos live in the private `banners` storage bucket (workspace blocks public buckets) with rows in `public.banners`; visitors play them through signed links created in `src/lib/banners-data.ts`.
-- The intro loader and `InfinityMark` carry `data-keep-motion` so the global reduced-motion rule does not freeze them.
+- The intro loader, `InfinityMark` and the tool-run loader (`ToolLoading`) carry `data-keep-motion` so the global reduced-motion rule does not freeze them.
+- The site background image lives in the private `site-assets` bucket, referenced by the single-row `public.site_settings` (id = 1); `SiteBackground` in `__root` shows it through a signed link from `src/lib/site-settings.ts`.
+- Visitors never see raw JSON or endpoint/method details: tool responses render through `ToolResult`, which uses the pure helpers in `src/lib/result-format.ts` (envelope unwrapping, Indonesian labels, plain-text copy).
