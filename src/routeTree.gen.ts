@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as KategoriRouteImport } from './routes/kategori'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiRunRouteImport } from './routes/api/run'
 import { Route as ToolSlugRouteImport } from './routes/tool.$slug'
@@ -28,6 +29,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KategoriRoute = KategoriRouteImport.update({
+  id: '/kategori',
+  path: '/kategori',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -49,6 +55,7 @@ const ToolSlugRoute = ToolSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/kategori': typeof KategoriRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/run': typeof ApiRunRoute
   '/tool/$slug': typeof ToolSlugRoute
@@ -56,6 +63,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/kategori': typeof KategoriRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/run': typeof ApiRunRoute
   '/tool/$slug': typeof ToolSlugRoute
@@ -65,20 +73,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/kategori': typeof KategoriRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/run': typeof ApiRunRoute
   '/tool/$slug': typeof ToolSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/admin' | '/api/run' | '/tool/$slug'
+  fullPaths: '/' | '/auth' | '/kategori' | '/admin' | '/api/run' | '/tool/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/admin' | '/api/run' | '/tool/$slug'
+  to: '/' | '/auth' | '/kategori' | '/admin' | '/api/run' | '/tool/$slug'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/kategori'
     | '/_authenticated/admin'
     | '/api/run'
     | '/tool/$slug'
@@ -88,6 +98,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  KategoriRoute: typeof KategoriRoute
   ApiRunRoute: typeof ApiRunRoute
   ToolSlugRoute: typeof ToolSlugRoute
 }
@@ -113,6 +124,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kategori': {
+      id: '/kategori'
+      path: '/kategori'
+      fullPath: '/kategori'
+      preLoaderRoute: typeof KategoriRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -154,6 +172,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  KategoriRoute: KategoriRoute,
   ApiRunRoute: ApiRunRoute,
   ToolSlugRoute: ToolSlugRoute,
 }

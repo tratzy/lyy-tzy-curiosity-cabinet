@@ -82,7 +82,7 @@ export function IntroLoader() {
       data-keep-motion
     >
       <div className="absolute inset-0 bg-grid opacity-60" />
-      <div className="absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-neon-soft blur-3xl" />
+      <div className="absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full glow-soft opacity-50" />
 
       {PARTICLES.map((p, i) => (
         <span

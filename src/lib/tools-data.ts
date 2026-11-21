@@ -40,3 +40,18 @@ export function topLevelTools(tools: Tool[]): Tool[] {
 export function childrenOf(tools: Tool[], parentId: string): Tool[] {
   return tools.filter((t) => t.parent_id === parentId);
 }
+
+/** Distinct categories of the top-level tools, in catalogue order, each with its tool count. */
+export function categoriesOf(tools: Tool[]): { name: string; count: number }[] {
+  const counts = new Map<string, number>();
+  for (const t of topLevelTools(tools)) {
+    const name = t.category.trim() || "Lainnya";
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+  return [...counts].map(([name, count]) => ({ name, count }));
+}
+
+/** Top-level tools in a category ("Lainnya" also matches tools with a blank category). */
+export function toolsInCategory(tools: Tool[], category: string): Tool[] {
+  return topLevelTools(tools).filter((t) => (t.category.trim() || "Lainnya") === category);
+}

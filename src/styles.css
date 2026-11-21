@@ -124,10 +124,9 @@
 
   /* Glass recipe shared by every frosted surface */
   --glass-fill: linear-gradient(150deg, oklch(1 0 0 / 0.12), oklch(1 0 0 / 0.04) 50%, oklch(1 0 0 / 0.07));
-  --glass-fill-strong: linear-gradient(150deg, oklch(0.26 0.035 262 / 0.78), oklch(0.17 0.03 262 / 0.82));
+  --glass-fill-strong: linear-gradient(150deg, oklch(0.24 0.035 262 / 0.94), oklch(0.16 0.03 262 / 0.96));
   --glass-stroke: oklch(1 0 0 / 0.16);
-  /* Blur kept razor-thin for performance; only the top bar, video banner and footer keep the full frost (see glass-bar). */
-  --glass-blur: 6px;
+  /* No blur on regular surfaces (performance); only the top bar, video banner and footer keep frost (see glass-bar). */
   --glass-highlight:
     inset 0 1px 0 0 oklch(1 0 0 / 0.28), inset 1px 0 0 0 oklch(1 0 0 / 0.08),
     inset 0 -1px 0 0 oklch(1 0 0 / 0.05), inset 0 0 24px -10px oklch(1 0 0 / 0.22);
@@ -185,10 +184,9 @@
 
 /* ---------- Utilities ---------- */
 
-/* Liquid glass panel: translucent tint, heavy blur + saturation, specular inner edge. */
+/* Liquid glass panel: translucent tint + specular inner edge, no backdrop blur. */
 @utility glass {
   background: var(--glass-fill);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--glass-stroke);
   box-shadow: var(--glass-shadow);
 }
@@ -196,7 +194,6 @@
 /* Denser glass for overlays (dialogs, menus, toasts) so text over busy content stays readable. */
 @utility glass-panel {
   background: var(--glass-fill-strong);
-  backdrop-filter: blur(10px) saturate(170%);
   border: 1px solid var(--glass-stroke);
   box-shadow: var(--glass-shadow);
 }
@@ -219,8 +216,17 @@
 /* Text fields: sunken glass with a soft inner shadow. */
 @utility glass-field {
   background: oklch(1 0 0 / 0.05);
-  backdrop-filter: blur(4px) saturate(150%);
   box-shadow: inset 0 1px 3px 0 oklch(0 0 0 / 0.28), inset 0 -1px 0 0 oklch(1 0 0 / 0.06);
+}
+
+/* Soft neon glow orb drawn with a radial gradient instead of a costly blur filter. */
+@utility glow-soft {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklab, var(--neon-cyan) 55%, transparent),
+    color-mix(in oklab, var(--neon-pink) 30%, transparent) 38%,
+    transparent 70%
+  );
 }
 
 /* Glossy liquid highlight for solid buttons. */
@@ -850,12 +856,10 @@
   from {
     opacity: 0;
     transform: translateY(8px);
-    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }
 
@@ -947,7 +951,6 @@
 .ambient-blob {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(70px);
   opacity: 0.55;
   animation: blob-drift var(--dur, 26s) ease-in-out infinite alternate;
   animation-delay: var(--delay, 0s);

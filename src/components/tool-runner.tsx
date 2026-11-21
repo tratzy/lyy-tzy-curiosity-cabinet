@@ -263,7 +263,7 @@ function EmptyState() {
   return (
     <div className="flex flex-col items-center gap-4 py-6 text-center">
       <div className="relative grid size-16 place-items-center">
-        <div className="absolute inset-0 rounded-2xl bg-gradient-neon opacity-20 blur-xl animate-float" />
+        <div className="absolute -inset-4 rounded-full glow-soft opacity-40 animate-float" />
         <div className="relative grid size-16 place-items-center glass rounded-2xl text-muted-foreground animate-float">
           <Sparkles className="size-6" />
         </div>

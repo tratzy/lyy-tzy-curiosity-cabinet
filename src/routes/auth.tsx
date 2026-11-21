@@ -104,7 +104,7 @@ function AuthPage() {
   return (
     <div className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-12">
       <div className="pointer-events-none absolute inset-0 bg-grid" />
-      <div className="pointer-events-none absolute left-1/2 top-1/3 size-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-neon-soft blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-1/3 size-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full glow-soft opacity-50" />
 
       <div className="relative w-full max-w-sm animate-fade-up">
         <Link

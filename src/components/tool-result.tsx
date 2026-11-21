@@ -399,7 +399,7 @@ function StatTile({ label, value }: { label: string; value: number | boolean }) 
       : formatPrimitive(value);
   return (
     <div className="relative overflow-hidden rounded-xl border border-border/70 glass-inset p-3.5">
-      <div className="pointer-events-none absolute -right-6 -top-6 size-16 rounded-full bg-gradient-neon opacity-15 blur-2xl" />
+      <div className="pointer-events-none absolute -right-6 -top-6 size-20 rounded-full glow-soft opacity-30" />
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
       <p
         className={cn(

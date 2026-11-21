@@ -22,3 +22,5 @@
 - [x] Hapus teks endpoint dan metode dari halaman publik
 - [x] Hasil tools modern: kartu teks utama, angka, daftar, gambar, audio — tanpa JSON mentah
 - [x] Tema kaca / liquid glass di seluruh web
+- [x] Hapus semua blur kecuali bilah atas, banner video, dan bilah bawah
+- [x] Menu hamburger kanan atas: Dashboard, Category (daftar kategori + halaman kategori), Admin Panel
