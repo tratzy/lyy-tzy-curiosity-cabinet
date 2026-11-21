@@ -11,6 +11,7 @@ const TYPE_LABEL: Record<ParamType, string> = {
   number: "Angka",
   url: "URL",
   select: "Pilihan",
+  image: "Gambar (upload)",
 };
 
 export function ParamsEditor({
