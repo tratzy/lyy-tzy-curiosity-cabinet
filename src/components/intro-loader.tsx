@@ -18,7 +18,7 @@ const statusFor = (pct: number) =>
     : pct >= 70
       ? "Hampir siap"
       : pct >= 35
-        ? "Menghubungkan endpoint"
+        ? "Menyalakan mesin"
         : "Menyiapkan tools";
 
 /**

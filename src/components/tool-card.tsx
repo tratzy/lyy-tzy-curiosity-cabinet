@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Layers } from "lucide-react";
+import { ArrowUpRight, Layers, Play } from "lucide-react";
 
 import { DynamicIcon } from "@/components/dynamic-icon";
 import type { Tool } from "@/lib/tools-data";
 
 /**
  * Tool tile for the 3-column grid. Three bands: a card header (category + badge/arrow),
- * a body (icon, name, description) and a footer (group size or HTTP method).
+ * a body (icon, name, description) and a footer (group size or a "Coba" cue).
  * Sized to stay readable at ~100px wide on phones; the description only shows from `sm` up.
  */
 export function ToolCard({
@@ -69,7 +69,9 @@ export function ToolCard({
             <Layers className="size-3 sm:size-3.5" /> {childCount ?? 0} tools
           </span>
         ) : (
-          <span className="rounded bg-primary/10 px-1.5 py-0.5 text-primary">{tool.method}</span>
+          <span className="flex items-center gap-1 rounded bg-primary/10 px-1.5 py-0.5 text-primary">
+            <Play className="size-2.5 fill-current sm:size-3" /> Coba
+          </span>
         )}
       </div>
     </Link>

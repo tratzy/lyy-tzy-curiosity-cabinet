@@ -62,6 +62,27 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          background_dim: number
+          background_path: string | null
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          background_dim?: number
+          background_path?: string | null
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          background_dim?: number
+          background_path?: string | null
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tool_secrets: {
         Row: {
           headers: Json

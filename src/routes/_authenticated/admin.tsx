@@ -6,6 +6,7 @@ import {
   ExternalLink,
   Eye,
   Film,
+  ImageIcon,
   Layers,
   LogOut,
   Pencil,
@@ -17,6 +18,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { BackgroundManager } from "@/components/admin/background-manager";
 import { BannerManager } from "@/components/admin/banner-manager";
 import { ToolFormDialog, type ToolFormTarget } from "@/components/admin/tool-form-dialog";
 import { DynamicIcon } from "@/components/dynamic-icon";
@@ -111,7 +113,7 @@ function AdminDashboard({
   const [target, setTarget] = useState<ToolFormTarget | null>(null);
   const [toDelete, setToDelete] = useState<Tool | null>(null);
   const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<"tools" | "banner">("tools");
+  const [tab, setTab] = useState<"tools" | "banner" | "background">("tools");
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["tools"] });
 
@@ -179,11 +181,12 @@ function AdminDashboard({
       </header>
 
       <main className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
-        <div className="mb-6 inline-grid grid-cols-2 gap-1 rounded-xl bg-secondary/60 p-1">
+        <div className="mb-6 inline-grid grid-cols-3 gap-1 rounded-xl bg-secondary/60 p-1">
           {(
             [
               { k: "tools", label: "Tools", Icon: Boxes },
               { k: "banner", label: "Banner", Icon: Film },
+              { k: "background", label: "Latar", Icon: ImageIcon },
             ] as const
           ).map(({ k, label, Icon }) => (
             <button
@@ -191,7 +194,7 @@ function AdminDashboard({
               type="button"
               onClick={() => setTab(k)}
               className={cn(
-                "flex items-center justify-center gap-2 rounded-lg px-5 py-2 text-sm font-medium transition-[background-color,color,box-shadow] duration-300",
+                "flex items-center justify-center gap-2 rounded-lg px-3 py-2 sm:px-5 text-sm font-medium transition-[background-color,color,box-shadow] duration-300",
                 tab === k
                   ? "bg-background text-primary shadow-glow-cyan"
                   : "text-muted-foreground hover:text-foreground",
@@ -202,7 +205,15 @@ function AdminDashboard({
           ))}
         </div>
 
-        {tab === "banner" ? (
+        {tab === "background" ? (
+          <div className="animate-fade-up">
+            <h1 className="text-3xl font-bold tracking-tight">Latar Belakang</h1>
+            <p className="mb-6 mt-1 text-sm text-muted-foreground">
+              Gambar ini tampil di belakang semua halaman web.
+            </p>
+            <BackgroundManager />
+          </div>
+        ) : tab === "banner" ? (
           <div className="animate-fade-up">
             <h1 className="text-3xl font-bold tracking-tight">Banner Video</h1>
             <p className="mb-6 mt-1 text-sm text-muted-foreground">

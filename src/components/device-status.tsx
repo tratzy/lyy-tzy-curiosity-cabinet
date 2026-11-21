@@ -159,22 +159,37 @@ function useBattery(): BatteryState {
   return state;
 }
 
-/** Battery drawn with plain CSS: outline, nub, and a fill that is exactly the remaining charge. */
+/**
+ * Battery drawn with plain CSS: rounded body, nub, and a fill that is exactly the remaining charge.
+ * When charging, a bolt sits centred inside the body instead of poking out over the ring.
+ */
 function BatteryGlyph({ level, color, charging }: { level: number; color: string; charging: boolean }) {
   return (
-    <span className="relative inline-flex items-center" style={{ color }}>
-      <span className="block h-[10px] w-[20px] rounded-[3px] border border-current p-[1.5px]">
+    <span className="relative inline-flex items-center" style={{ color }} aria-hidden>
+      <span className="relative block h-[12px] w-[22px] rounded-[3.5px] border-[1.5px] border-current p-[1.5px] sm:h-[13px] sm:w-[24px]">
         <span
-          className="block h-full rounded-[1.5px] bg-current transition-[width] duration-700"
-          style={{ width: `${Math.max(level, 0.04) * 100}%` }}
+          className={cn(
+            "block h-full rounded-[1.5px] bg-current transition-[width] duration-700",
+            charging && "animate-pulse",
+          )}
+          style={{ width: `${Math.max(level, 0.06) * 100}%` }}
         />
+        {charging && (
+          <span className="absolute inset-0 grid place-items-center">
+            <Zap className="size-[9px] fill-foreground stroke-background stroke-[1.5]" />
+          </span>
+        )}
       </span>
-      <span className="ml-px h-[4px] w-[2px] rounded-r-sm bg-current" />
-      {charging && (
-        <Zap className="absolute -right-1.5 -top-2 size-3 fill-warning text-warning" aria-hidden />
-      )}
+      <span className="ml-[1.5px] h-[5px] w-[2px] rounded-r-[1px] bg-current" />
     </span>
   );
+}
+
+function batteryColor(level: number, charging: boolean): string {
+  if (charging) return "var(--success)";
+  if (level > 0.5) return "var(--success)";
+  if (level > 0.2) return "var(--warning)";
+  return "var(--destructive)";
 }
 
 function BatteryGauge() {
@@ -192,10 +207,14 @@ function BatteryGauge() {
       </RingGauge>
     );
   }
-  const color =
-    battery.level > 0.5 ? "var(--success)" : battery.level > 0.2 ? "var(--warning)" : "var(--destructive)";
+  const color = batteryColor(battery.level, battery.charging);
   return (
-    <RingGauge value={battery.level} colors={[color, color]} label="Baterai">
+    <RingGauge
+      value={battery.level}
+      colors={[color, `color-mix(in oklab, ${color} 55%, var(--neon-cyan))`]}
+      label={battery.charging ? "Mengisi" : "Baterai"}
+      title={battery.charging ? "Sedang mengisi daya" : undefined}
+    >
       <BatteryGlyph level={battery.level} color={color} charging={battery.charging} />
       <Value>{Math.round(battery.level * 100)}%</Value>
     </RingGauge>

@@ -683,3 +683,193 @@
   margin-left: -3.5px;
   top: -2px;
 }
+
+/* ---------- Tool run loader ---------- */
+
+.tl-glow {
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--neon-cyan) 28%, transparent),
+    color-mix(in oklab, var(--neon-pink) 10%, transparent) 45%,
+    transparent 70%
+  );
+  animation: tl-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes tl-breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.tl-ring {
+  position: absolute;
+  border-radius: 50%;
+  animation: orb-spin var(--dur, 2s) linear infinite;
+  animation-direction: var(--dir, normal);
+  will-change: transform;
+}
+
+.tl-ring-a {
+  inset: 0;
+  --dur: 1.6s;
+  background: conic-gradient(from 0deg, transparent 0 40%, var(--neon-cyan) 90%, transparent 90.5%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+}
+
+.tl-ring-b {
+  inset: 12px;
+  --dur: 2.2s;
+  --dir: reverse;
+  background: conic-gradient(from 90deg, transparent 0 50%, var(--neon-pink) 92%, transparent 92.5%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+}
+
+.tl-ring-c {
+  inset: 26px;
+  --dur: 7s;
+  border: 1px dashed color-mix(in oklab, var(--neon-blue) 55%, transparent);
+}
+
+.tl-orbit {
+  position: absolute;
+  inset: -2px;
+  animation: orb-spin var(--dur, 3s) linear infinite;
+  animation-direction: var(--dir, normal);
+}
+
+.tl-dot {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--foreground);
+  box-shadow:
+    0 0 8px 2px var(--c),
+    0 0 18px 6px color-mix(in oklab, var(--c) 45%, transparent);
+}
+
+.tl-core {
+  animation: tl-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes tl-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(4deg);
+  }
+}
+
+.tl-msg {
+  animation: tl-msg-in 0.45s var(--ease-out-expo) both;
+}
+
+@keyframes tl-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.tl-bar {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 45%;
+  border-radius: inherit;
+  background: var(--gradient-neon);
+  box-shadow: var(--shadow-glow-cyan);
+  animation: tl-bar 1.5s var(--ease-draw) infinite;
+}
+
+@keyframes tl-bar {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(240%);
+  }
+}
+
+.tl-skel {
+  background: linear-gradient(
+    100deg,
+    var(--surface-2) 20%,
+    color-mix(in oklab, var(--neon-cyan) 14%, var(--surface-2)) 45%,
+    var(--surface-2) 70%
+  );
+  background-size: 220% 100%;
+  animation: tl-skel 1.6s linear infinite;
+}
+
+@keyframes tl-skel {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+/* ---------- Tool results ---------- */
+
+.result-media {
+  background: repeating-conic-gradient(var(--surface-2) 0 25%, var(--surface) 0 50%) 0 0 / 20px 20px;
+}
+
+.result-stagger > * {
+  animation: fade-up 0.55s var(--ease-out-expo) both;
+}
+.result-stagger > :nth-child(2) {
+  animation-delay: 60ms;
+}
+.result-stagger > :nth-child(3) {
+  animation-delay: 120ms;
+}
+.result-stagger > :nth-child(4) {
+  animation-delay: 180ms;
+}
+.result-stagger > :nth-child(n + 5) {
+  animation-delay: 240ms;
+}
+
+.result-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    color-mix(in oklab, var(--neon-cyan) 14%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: result-sheen 1.4s var(--ease-out-expo) 0.2s 1 both;
+  pointer-events: none;
+}
+
+@keyframes result-sheen {
+  to {
+    transform: translateX(100%);
+  }
+}

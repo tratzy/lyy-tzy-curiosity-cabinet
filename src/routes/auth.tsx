@@ -17,12 +17,12 @@ export const Route = createFileRoute("/auth")({
       { title: "Masuk Admin — Lyy'Tzy" },
       {
         name: "description",
-        content: "Masuk ke panel admin Lyy'Tzy untuk mengelola tools dan endpoint.",
+        content: "Masuk ke panel admin Lyy'Tzy untuk mengelola tools dan tampilan web.",
       },
       { property: "og:title", content: "Masuk Admin — Lyy'Tzy" },
       {
         property: "og:description",
-        content: "Masuk ke panel admin Lyy'Tzy untuk mengelola tools dan endpoint.",
+        content: "Masuk ke panel admin Lyy'Tzy untuk mengelola tools dan tampilan web.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

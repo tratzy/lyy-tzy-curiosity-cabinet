@@ -53,10 +53,8 @@ export const Route = createFileRoute("/api/run")({
         } catch (e) {
           const message =
             e instanceof Error && e.name === "TimeoutError"
-              ? "Endpoint terlalu lama merespons"
-              : e instanceof Error
-                ? e.message
-                : "Gagal menghubungi endpoint";
+              ? "Layanan terlalu lama merespons"
+              : "Layanan tidak bisa dihubungi";
           return Response.json({ error: message }, { status: 502 });
         }
 

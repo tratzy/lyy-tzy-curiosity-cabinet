@@ -84,15 +84,6 @@ function ToolPage() {
           </div>
         </header>
 
-        {tool.kind === "dynamic" && tool.endpoint && (
-          <div className="mt-6 flex items-center gap-2 overflow-hidden rounded-xl border border-border bg-background/60 px-3 py-2 font-mono text-xs animate-fade-up [animation-delay:80ms]">
-            <span className="shrink-0 rounded bg-primary/15 px-1.5 py-0.5 font-semibold text-primary">
-              {tool.method}
-            </span>
-            <span className="truncate text-muted-foreground">{tool.endpoint}</span>
-          </div>
-        )}
-
         <div className="mt-6 animate-fade-up [animation-delay:140ms]">
           {tool.kind === "static" ? (
             subTools.length === 0 ? (
