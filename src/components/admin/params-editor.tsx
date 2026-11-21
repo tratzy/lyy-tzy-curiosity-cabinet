@@ -26,7 +26,7 @@ export function ParamsEditor({
   return (
     <div className="space-y-3">
       {value.map((p, i) => (
-        <div key={i} className="space-y-2 rounded-xl border border-border bg-background/50 p-3">
+        <div key={i} className="space-y-2 rounded-xl border border-border glass-inset p-3">
           <div className="grid grid-cols-2 gap-2">
             <Input
               value={p.key}

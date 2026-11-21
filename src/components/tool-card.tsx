@@ -23,7 +23,7 @@ export function ToolCard({
     <Link
       to="/tool/$slug"
       params={{ slug: tool.slug }}
-      className="neon-border group relative flex min-w-0 flex-col overflow-hidden rounded-xl border border-border/70 bg-gradient-card shadow-card transition-transform duration-300 ease-out hover:-translate-y-1 focus-visible:outline-none animate-fade-up sm:rounded-2xl"
+      className="neon-border liquid-sheen group relative flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-gradient-card shadow-card backdrop-blur-xl backdrop-saturate-150 transition-transform duration-300 ease-out hover:-translate-y-1 focus-visible:outline-none animate-fade-up sm:rounded-2xl"
       style={{ animationDelay: `${Math.min(index, 12) * 45}ms` }}
     >
       <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-gradient-neon opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-25" />
@@ -31,7 +31,7 @@ export function ToolCard({
       {/* Card header */}
       <div
         data-slot="card-header"
-        className="relative flex items-center justify-between gap-1.5 border-b border-border/60 bg-gradient-neon-soft px-2 py-1.5 sm:px-4 sm:py-2.5"
+        className="relative flex items-center justify-between gap-1.5 border-b border-border/70 bg-secondary/60 px-2 py-1.5 sm:px-4 sm:py-2.5"
       >
         <span className="flex min-w-0 items-center gap-1.5 font-mono text-[9px] font-medium uppercase tracking-wider text-muted-foreground sm:text-[10px]">
           <span className="size-1.5 shrink-0 rounded-full bg-primary shadow-glow-cyan" />
@@ -39,7 +39,7 @@ export function ToolCard({
         </span>
         <span className="flex shrink-0 items-center gap-1">
           {tool.badge && (
-            <span className="hidden rounded border border-border/80 bg-secondary/70 px-1.5 py-px font-mono text-[9px] font-medium uppercase tracking-wider text-muted-foreground sm:inline">
+            <span className="hidden rounded-full border border-border bg-secondary px-1.5 py-px font-mono text-[9px] font-medium uppercase tracking-wider text-muted-foreground sm:inline">
               {tool.badge}
             </span>
           )}
@@ -49,7 +49,7 @@ export function ToolCard({
 
       {/* Body */}
       <div className="relative flex flex-1 flex-col items-center gap-2 p-2.5 text-center sm:items-start sm:gap-3 sm:p-4 sm:text-left">
-        <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-primary/30 bg-gradient-neon-soft text-primary transition-[box-shadow,color] duration-300 group-hover:text-accent group-hover:shadow-glow-pink sm:size-12 sm:rounded-xl">
+        <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-border bg-gradient-neon-soft text-primary shadow-card transition-[box-shadow,color] duration-300 group-hover:text-accent group-hover:shadow-glow-pink sm:size-12 sm:rounded-xl">
           <DynamicIcon name={tool.icon} className="size-5" />
         </div>
         <div className="min-w-0 max-w-full">
@@ -69,7 +69,7 @@ export function ToolCard({
             <Layers className="size-3 sm:size-3.5" /> {childCount ?? 0} tools
           </span>
         ) : (
-          <span className="flex items-center gap-1 rounded bg-primary/10 px-1.5 py-0.5 text-primary">
+          <span className="flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-primary">
             <Play className="size-2.5 fill-current sm:size-3" /> Coba
           </span>
         )}

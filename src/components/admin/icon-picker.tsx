@@ -80,7 +80,7 @@ export function IconPicker({ value, onChange }: { value: string; onChange: (v: s
         )}
       </p>
       {open && (
-        <div className="grid max-h-48 grid-cols-6 gap-1.5 overflow-y-auto rounded-xl border border-border bg-background/60 p-2 sm:grid-cols-8">
+        <div className="grid max-h-48 grid-cols-6 gap-1.5 overflow-y-auto rounded-xl border border-border glass-inset p-2 sm:grid-cols-8">
           {suggestions.map((name) => (
             <button
               key={name}

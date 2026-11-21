@@ -41,8 +41,8 @@ export function VideoBanner({ banners }: { banners: Banner[] }) {
   );
 
   return (
-    <div className="neon-border group relative overflow-hidden rounded-3xl border border-border/70 bg-surface shadow-card">
-      <div className="relative aspect-video w-full sm:aspect-[21/9]">
+    <div className="neon-border group relative overflow-hidden rounded-3xl glass p-1.5">
+      <div className="relative aspect-video w-full overflow-hidden rounded-[1.25rem] sm:aspect-[21/9]">
         {current.link_url ? (
           <a
             href={current.link_url}

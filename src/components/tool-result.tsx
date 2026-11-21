@@ -85,7 +85,7 @@ function CopyButton({ text, label, compact }: { text: string; label: string; com
       }}
       aria-label={label}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface/70 text-xs font-medium text-muted-foreground transition-[color,border-color,box-shadow] duration-300 hover:border-primary/50 hover:text-primary hover:shadow-glow-cyan",
+        "inline-flex items-center gap-1.5 rounded-lg border border-border glass-field text-xs font-medium text-muted-foreground transition-[color,border-color,box-shadow] duration-300 hover:border-primary/50 hover:text-primary hover:shadow-glow-cyan",
         compact ? "size-8 justify-center" : "h-9 px-3",
       )}
     >
@@ -247,7 +247,7 @@ function ArrayView({ items, depth }: { items: unknown[]; depth: number }) {
             {visible.map((v, i) => (
               <li
                 key={i}
-                className="flex gap-3 rounded-xl border border-border/70 bg-background/40 p-3 text-sm leading-relaxed"
+                className="flex gap-3 rounded-xl border border-border/70 glass-inset p-3 text-sm leading-relaxed"
               >
                 <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary/15 font-mono text-[11px] text-primary">
                   {i + 1}
@@ -278,7 +278,7 @@ function ArrayView({ items, depth }: { items: unknown[]; depth: number }) {
       {visible.map((v, i) => (
         <div
           key={i}
-          className="relative rounded-xl border border-border/70 bg-background/35 p-3 pl-10 sm:p-4 sm:pl-12"
+          className="relative rounded-xl border border-border/70 glass-inset p-3 pl-10 sm:p-4 sm:pl-12"
         >
           <span className="absolute left-3 top-3 grid size-6 place-items-center rounded-md bg-gradient-neon-soft font-mono text-[11px] font-semibold text-primary sm:left-4 sm:top-4">
             {i + 1}
@@ -334,7 +334,7 @@ function ObjectView({ obj, depth }: { obj: PlainObject; depth: number }) {
         <dl
           className={cn(
             "divide-y divide-border/50 overflow-hidden rounded-xl border border-border/70",
-            top ? "bg-background/40" : "bg-background/25",
+            top ? "glass-inset" : "glass-inset",
           )}
         >
           {fields.map(([k, v]) => (
@@ -398,7 +398,7 @@ function StatTile({ label, value }: { label: string; value: number | boolean }) 
       ? new Intl.NumberFormat("id-ID", { maximumFractionDigits: 4 }).format(value)
       : formatPrimitive(value);
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border/70 bg-background/40 p-3.5">
+    <div className="relative overflow-hidden rounded-xl border border-border/70 glass-inset p-3.5">
       <div className="pointer-events-none absolute -right-6 -top-6 size-16 rounded-full bg-gradient-neon opacity-15 blur-2xl" />
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
       <p

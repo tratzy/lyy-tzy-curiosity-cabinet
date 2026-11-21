@@ -55,7 +55,7 @@ function Index() {
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6">
         <section className="relative pb-8 pt-6 sm:pt-10">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-grid" />
+          
           <div className="relative">
             <HomeBanner />
 
@@ -66,7 +66,7 @@ function Index() {
         </section>
 
         {top.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border py-20 text-center text-muted-foreground">
+          <div className="glass rounded-2xl border-dashed py-20 text-center text-muted-foreground">
             Belum ada tools.
           </div>
         ) : (
@@ -132,7 +132,7 @@ function PageButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="grid size-10 place-items-center rounded-xl border border-border bg-surface/60 text-muted-foreground transition-[background-color,border-color,color,box-shadow] duration-300 hover:border-primary/40 hover:text-foreground hover:shadow-glow-cyan disabled:pointer-events-none disabled:opacity-35"
+      className="grid size-10 place-items-center rounded-xl border border-border glass-field text-muted-foreground transition-[background-color,border-color,color,box-shadow] duration-300 hover:border-primary/40 hover:text-foreground hover:shadow-glow-cyan disabled:pointer-events-none disabled:opacity-35"
     >
       {children}
     </button>

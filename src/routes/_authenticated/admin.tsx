@@ -156,7 +156,7 @@ function AdminDashboard({
 
   return (
     <div className="min-h-dvh pb-16">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/75 backdrop-blur-xl">
+      <header className="glass sticky top-0 z-40 rounded-none border-x-0 border-t-0">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2.5">
             <InfinityMark className="h-7 w-12" detailed={false} />
@@ -259,7 +259,7 @@ function AdminDashboard({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Cari nama, slug, atau endpoint…"
-                className="h-11 w-full rounded-xl border border-border bg-surface/70 pl-9 pr-3 text-sm outline-none transition-[border-color,box-shadow] focus:border-primary/60 focus:shadow-glow-cyan"
+                className="h-11 w-full rounded-xl border border-border glass-field pl-9 pr-3 text-sm outline-none transition-[border-color,box-shadow] focus:border-primary/60 focus:shadow-glow-cyan"
               />
             </label>
 
@@ -280,7 +280,7 @@ function AdminDashboard({
                       onToggle={(a) => toggleActive(tool, a)}
                     />
                     {tool.kind === "static" && (
-                      <div className="border-t border-border/60 bg-background/30">
+                      <div className="border-t border-border/60 glass-inset">
                         {childrenOf(tools, tool.id)
                           .filter((c) => !q || matches(c) || matches(tool))
                           .map((child) => (

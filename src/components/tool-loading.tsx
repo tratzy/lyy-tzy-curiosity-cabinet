@@ -45,7 +45,7 @@ export function ToolLoading({ icon, media }: { icon: string | null; media: boole
           <span className="tl-dot" style={{ ["--c" as string]: "var(--neon-pink)" }} />
         </div>
         <div className="absolute inset-0 grid place-items-center">
-          <div className="tl-core grid size-14 place-items-center rounded-2xl border border-primary/40 bg-background/70 text-primary shadow-glow-cyan backdrop-blur">
+          <div className="tl-core grid size-14 place-items-center rounded-2xl glass border-primary/40 text-primary">
             <DynamicIcon name={icon ?? undefined} className="size-6" />
           </div>
         </div>

@@ -163,7 +163,7 @@ export function ToolRunner({ tool }: { tool: Tool }) {
                 placeholder={p.placeholder}
                 required={p.required}
                 rows={4}
-                className="resize-none bg-background/60"
+                className="resize-none glass-field"
               />
             ) : p.type === "select" ? (
               <select
@@ -171,7 +171,7 @@ export function ToolRunner({ tool }: { tool: Tool }) {
                 value={values[p.key] ?? ""}
                 onChange={(e) => setValues((v) => ({ ...v, [p.key]: e.target.value }))}
                 required={p.required}
-                className="h-10 w-full rounded-md border border-input bg-background/60 px-3 text-sm text-foreground outline-none focus:border-primary/60"
+                className="h-10 w-full rounded-md border border-input glass-field px-3 text-sm text-foreground outline-none focus:border-primary/60"
               >
                 {(p.options ?? []).map((o) => (
                   <option key={o} value={o}>
@@ -187,7 +187,7 @@ export function ToolRunner({ tool }: { tool: Tool }) {
                 onChange={(e) => setValues((v) => ({ ...v, [p.key]: e.target.value }))}
                 placeholder={p.placeholder}
                 required={p.required}
-                className="h-10 bg-background/60"
+                className="h-10 glass-field"
               />
             )}
           </div>
@@ -264,7 +264,7 @@ function EmptyState() {
     <div className="flex flex-col items-center gap-4 py-6 text-center">
       <div className="relative grid size-16 place-items-center">
         <div className="absolute inset-0 rounded-2xl bg-gradient-neon opacity-20 blur-xl animate-float" />
-        <div className="relative grid size-16 place-items-center rounded-2xl border border-border bg-surface text-muted-foreground animate-float">
+        <div className="relative grid size-16 place-items-center glass rounded-2xl text-muted-foreground animate-float">
           <Sparkles className="size-6" />
         </div>
       </div>

@@ -157,7 +157,7 @@ function AuthPage() {
                   placeholder="lyytzy"
                   autoComplete="username"
                   autoCapitalize="none"
-                  className="h-11 bg-background/60 pl-9"
+                  className="h-11 glass-field pl-9"
                   required
                 />
               </div>
@@ -173,7 +173,7 @@ function AuthPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete={mode === "register" ? "new-password" : "current-password"}
-                  className="h-11 bg-background/60 px-9"
+                  className="h-11 glass-field px-9"
                   required
                 />
                 <button

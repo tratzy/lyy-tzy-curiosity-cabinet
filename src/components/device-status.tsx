@@ -88,7 +88,7 @@ function RingGauge({
             }}
           />
         </svg>
-        <div className="absolute inset-[7px] flex flex-col items-center justify-center gap-1 rounded-full bg-background/50 text-foreground">
+        <div className="absolute inset-[7px] flex flex-col items-center justify-center gap-1 glass-inset rounded-full text-foreground">
           {children}
         </div>
       </div>
