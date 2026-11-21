@@ -12,7 +12,7 @@
 - [x] Hapus teks hero (judul, subjudul, badge) di beranda
 - [x] Banner video MP4 di beranda, upload/kelola dari panel admin
 - [x] Pastikan loading pembuka selalu tampil (juga di HP dengan mode kurangi animasi)
-- [x] Loading pembuka: simbol infinity dibentuk oleh cahaya komet yang bergerak mengikuti progres (menggantikan Orbital Core)
+- [x] Loading pembuka: Orbital Core — dua kubus kristal neon berputar, 3 cincin giroskop 3D dengan cahaya komet, cincin progres melingkar (menggantikan simbol infinity; infinity tetap jadi logo header)
 - [x] Beranda: grid 3×3 (3 kolom, 9 tools per halaman) dengan navigasi halaman
 - [x] Kartu tool dengan card header (kategori + badge), body, dan footer; tampil rapat di HP
 - [x] Beranda: pencarian, filter kategori, dan statistik jumlah diganti kartu status 4 elemen (baterai, cuaca, jaringan, waktu WIB) dengan cincin progres

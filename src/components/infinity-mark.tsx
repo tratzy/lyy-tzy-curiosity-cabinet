@@ -1,4 +1,4 @@
-import { useId, type CSSProperties, type Ref } from "react";
+import { useId, type CSSProperties } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -15,11 +15,6 @@ type Props = {
   detailed?: boolean;
   /** First-load mode: a line of light draws the infinity, then move lines keep circling it. */
   intro?: boolean;
-  /**
-   * Loader mode: the parent writes loading progress (0..1) into `--p` on this element. A comet of
-   * light runs along the path and its trail forms the infinity as progress grows.
-   */
-  progressRef?: Ref<HTMLDivElement>;
 };
 
 type Layer = readonly [length: number, width: number, opacity: number];
@@ -36,14 +31,6 @@ const COMET_FULL: readonly Layer[] = [
 const COMET_MINI: readonly Layer[] = [
   [20, 5, 0.3],
   [9, 8, 0.7],
-];
-// The comet that forms the infinity in loader mode: long faint tail, wide bright head.
-const TRACER: readonly Layer[] = [
-  [34, 3, 0.12],
-  [22, 5, 0.22],
-  [13, 8, 0.4],
-  [6, 12, 0.7],
-  [2.5, 18, 0.95],
 ];
 const LINE_FULL: readonly Layer[] = [
   [42, 1.2, 0.25],
@@ -63,7 +50,6 @@ export function InfinityMark({
   animated = true,
   detailed = true,
   intro = false,
-  progressRef,
 }: Props) {
   const uid = useId().replace(/:/g, "");
   const tube = `inf-tube-${uid}`;
@@ -72,15 +58,12 @@ export function InfinityMark({
   const shine = `inf-shine-${uid}`;
 
   const extrusion = detailed ? [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] : [4, 2];
-  const trace = Boolean(progressRef) && animated;
-  const draw = intro && animated && !trace;
+  const draw = intro && animated;
   // Move lines wait until the line of light has finished drawing the infinity.
   const lightsDelay = draw ? `${INFINITY_DRAW_SECONDS}s` : "0s";
-  const drawProps = trace
-    ? { pathLength: 100, strokeLinecap: "round" as const, className: "inf-trace" }
-    : draw
-      ? { pathLength: 100, strokeLinecap: "round" as const, className: "inf-draw" }
-      : { strokeLinecap: "butt" as const };
+  const drawProps = draw
+    ? { pathLength: 100, strokeLinecap: "round" as const, className: "inf-draw" }
+    : { strokeLinecap: "butt" as const };
 
   const wrapperStyle = {
     ["--draw-dur" as string]: `${INFINITY_DRAW_SECONDS}s`,
@@ -88,7 +71,6 @@ export function InfinityMark({
 
   return (
     <div
-      ref={progressRef}
       className={cn("relative aspect-[400/220]", className)}
       style={wrapperStyle}
       aria-hidden="true"
@@ -99,7 +81,7 @@ export function InfinityMark({
         viewBox="0 0 400 220"
         className={cn(
           "absolute inset-0 size-full overflow-visible",
-          animated && (trace ? "inf-halo-trace" : draw ? "inf-halo-intro" : "inf-pulse"),
+          animated && (draw ? "inf-halo-intro" : "inf-pulse"),
         )}
         style={animated ? undefined : { opacity: 0.75 }}
       >
@@ -142,21 +124,8 @@ export function InfinityMark({
           </linearGradient>
         </defs>
 
-        {/* Faint guide so the shape the light is forming can be sensed before it is complete */}
-        {trace && (
-          <path
-            d={INFINITY_PATH}
-            fill="none"
-            stroke={`url(#${tube})`}
-            strokeWidth={2}
-            strokeDasharray="1 6"
-            strokeLinecap="round"
-            opacity={0.35}
-          />
-        )}
-
         {/* Soft glow that travels with the drawing line (no blur filter, so it stays cheap) */}
-        {(draw || trace) && (
+        {draw && (
           <path
             d={INFINITY_PATH}
             fill="none"
@@ -221,24 +190,8 @@ export function InfinityMark({
               </g>
             )}
 
-            {/* Loader mode: the comet whose trail forms the infinity, following loading progress */}
-            {trace && (
-              <g className="inf-tracer">
-                <Tracer color="var(--neon-cyan)" />
-                <path
-                  d={INFINITY_PATH}
-                  pathLength={100}
-                  stroke="white"
-                  strokeWidth={6}
-                  strokeDasharray="1.5 98.5"
-                  className="inf-trace-head"
-                  style={{ ["--len" as string]: 1.5 }}
-                />
-              </g>
-            )}
-
             {/* Move lines that keep circling once the infinity is complete */}
-            <g className={trace ? "inf-lights-trace" : draw ? "inf-lights-in" : undefined}>
+            <g className={draw ? "inf-lights-in" : undefined}>
               <Comet
                 layers={detailed ? COMET_FULL : COMET_MINI}
                 color="var(--neon-cyan)"
@@ -272,26 +225,6 @@ export function InfinityMark({
         </svg>
       )}
     </div>
-  );
-}
-
-function Tracer({ color }: { color: string }) {
-  return (
-    <>
-      {TRACER.map(([len, width, opacity]) => (
-        <path
-          key={len}
-          d={INFINITY_PATH}
-          pathLength={100}
-          stroke={color}
-          strokeOpacity={opacity}
-          strokeWidth={width}
-          strokeDasharray={`${len} ${100 - len}`}
-          className="inf-trace-head"
-          style={{ ["--len" as string]: len }}
-        />
-      ))}
-    </>
   );
 }
 

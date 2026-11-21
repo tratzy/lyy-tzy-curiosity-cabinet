@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { InfinityMark } from "@/components/infinity-mark";
+import { OrbitalCore } from "@/components/orbital-core";
 
 const DURATION_MS = 3000;
 const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
@@ -23,7 +23,7 @@ const statusFor = (pct: number) =>
 
 /**
  * First-load splash. Progress is written straight to the DOM through refs (no React
- * re-render per frame) so the bar and the light tracing the infinity stay at 60fps.
+ * re-render per frame) so the bar and the orbital animation stay at 60fps.
  */
 export function IntroLoader() {
   const [phase, setPhase] = useState<"loading" | "exit" | "done">("loading");
@@ -99,9 +99,9 @@ export function IntroLoader() {
       ))}
 
       <div className="relative flex w-full max-w-md flex-col items-center px-8">
-        <InfinityMark progressRef={orbRef} className="w-[min(82vw,360px)]" />
+        <OrbitalCore progressRef={orbRef} />
 
-        <p className="mt-10 text-center font-display text-sm tracking-[0.25em] text-foreground sm:text-base">
+        <p className="mt-14 text-center font-display text-sm tracking-[0.25em] text-foreground sm:text-base">
           <span className="text-gradient-neon font-bold">LYY&apos;TZY</span>{" "}
           <span className="text-muted-foreground">sedang memuat</span>
           <span className="loader-dot text-neon-cyan">.</span>

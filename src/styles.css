@@ -367,31 +367,6 @@
     inf-pulse 2.4s ease-in-out 2.1s infinite;
 }
 
-/*
- * Loader mode: progress (0..1) arrives in --p. The trail grows with it and the comet head sits at
- * its tip, so moving light visibly forms the infinity. Once complete, the move lines take over.
- */
-.inf-trace {
-  stroke-dasharray: 100;
-  stroke-dashoffset: calc(100 - var(--p, 0) * 100);
-}
-
-.inf-trace-head {
-  stroke-dashoffset: calc(var(--len, 0) - var(--p, 0) * 100);
-}
-
-.inf-tracer {
-  opacity: calc(1 - clamp(0, (var(--p, 0) - 0.96) * 25, 1));
-}
-
-.inf-lights-trace {
-  opacity: clamp(0, (var(--p, 0) - 0.9) * 10, 1);
-}
-
-.inf-halo-trace {
-  opacity: calc(0.1 + var(--p, 0) * 0.8);
-}
-
 .inf-pulse {
   animation: inf-pulse 2.4s ease-in-out infinite;
 }
