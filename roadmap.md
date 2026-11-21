@@ -1,0 +1,18 @@
+# Lyy'Tzy Multi Tools — Roadmap
+
+- [x] Design system neon (dark, cyan + magenta)
+- [x] Loading screen: Infinity 3D neon + cahaya bergerak, teks "Lyy'Tzy sedang memuat", progress bar
+- [x] Database: tools (statis = grup berisi sub-tools, dinamis = 1 endpoint), header rahasia, roles, profiles
+- [x] Proxy server untuk menjalankan endpoint tools (GET/POST/PUT/PATCH/DELETE)
+- [x] Beranda: grid tools
+- [x] Halaman tool: grup statis (daftar sub-tools) & tool dinamis (form + hasil gambar/video/audio/JSON)
+- [x] Login admin username + password (akun pertama = admin)
+- [x] Panel admin: tambah/edit/hapus tools, ikon nama Lucide (preview), metode, endpoint, parameter
+- [x] Contoh data: Maker (Brat, BratVid, QR), Tools (Translate, IP Lookup, Kamus), dll
+- [x] Hapus teks hero (judul, subjudul, badge) di beranda
+- [x] Banner video MP4 di beranda, upload/kelola dari panel admin
+- [x] Pastikan loading pembuka selalu tampil (juga di HP dengan mode kurangi animasi)
+- [x] Loading pembuka: Orbital Core — dua kubus kristal neon berputar, 3 cincin giroskop 3D dengan cahaya komet, cincin progres melingkar (menggantikan simbol infinity; infinity tetap jadi logo header)
+- [x] Beranda: grid 3×3 (3 kolom, 9 tools per halaman) dengan navigasi halaman
+- [x] Kartu tool dengan card header (kategori + badge), body, dan footer; tampil rapat di HP
+- [x] Beranda: pencarian, filter kategori, dan statistik jumlah diganti kartu status 4 elemen (baterai, cuaca, jaringan, waktu WIB) dengan cincin progres

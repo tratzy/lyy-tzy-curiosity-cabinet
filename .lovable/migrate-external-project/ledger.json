@@ -1,0 +1,10 @@
+[
+  {"capability":"code","source":"zip infinity-tools-hub-main","outcome":"copied byte-for-byte (only 2 type annotations widened in device-status.tsx)","status":"verified","next_action":"none"},
+  {"capability":"schema","source":"drizzle/migrations 0000+0001","outcome":"applied identical SQL","status":"verified","next_action":"none"},
+  {"capability":"records","source":"seed tools in migration; later admin edits, tool_secrets, banners not exported","outcome":"seed imported","status":"pending","next_action":"user may send CSV exports of tools, tool_secrets, banners or skip"},
+  {"capability":"auth identities","source":"username+password (synthetic emails), auto-confirm","outcome":"email auth + auto-confirm enabled","status":"pending","next_action":"old accounts not carried over; first signup becomes admin"},
+  {"capability":"authorization","source":"user_roles + has_role RLS","outcome":"migrated","status":"verified","next_action":"none"},
+  {"capability":"storage","source":"private bucket banners","outcome":"bucket + policies created","status":"pending","next_action":"banner videos must be re-uploaded from admin panel"},
+  {"capability":"public endpoint","source":"/api/run","outcome":"preserved","status":"verified","next_action":"none"},
+  {"capability":"verification","source":"-","outcome":"tests 15/15, build OK, home/tool/auth pages render, cat-fact tool runs","status":"partial","next_action":"admin sign-in not exercised to avoid claiming first-admin slot"}
+]

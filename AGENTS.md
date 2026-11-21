@@ -28,3 +28,14 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Tools live in `public.tools`: `kind = static` is a group whose children point to it via `parent_id`; `kind = dynamic` runs one endpoint. Keep this two-level shape so the home grid and group pages stay simple.
+- Tools run through the `/api/run` server route, which builds the upstream request with `buildUpstreamRequest` in `src/lib/tool-request.ts`; browsers never call tool endpoints directly (avoids CORS and keeps secret headers server-side).
+- API keys for tools go in `public.tool_secrets` (admin-only RLS), never in `tools`, because `tools` is publicly readable.
+- Auth is username + password: usernames map to synthetic emails via `src/lib/username.ts`, auto-confirm is on, and email-based password reset is not available.
+- Roles live in `public.user_roles`; the signup trigger grants `admin` only to the first account, and the UI hides registration once `admin_exists()` is true.
+- Tool icons are stored as Lucide icon names and rendered through `DynamicIcon`, which accepts PascalCase or kebab-case.
+- Home banner videos live in the private `banners` storage bucket (workspace blocks public buckets) with rows in `public.banners`; visitors play them through signed links created in `src/lib/banners-data.ts`.
+- The intro loader and `InfinityMark` carry `data-keep-motion` so the global reduced-motion rule does not freeze them.
