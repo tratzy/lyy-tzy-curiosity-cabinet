@@ -11,6 +11,7 @@ import {
   XCircle,
 } from "lucide-react";
 
+import { MediaCardGrid, MediaCardView } from "@/components/media-card";
 import { Button } from "@/components/ui/button";
 import {
   formatPrimitive,
@@ -18,6 +19,8 @@ import {
   isEmpty,
   isPlainObject,
   isUrl,
+  linkLabel,
+  mediaCardOf,
   mediaOf,
   primaryTextKey,
   toPlainText,
@@ -215,6 +218,12 @@ function ArrayView({ items, depth }: { items: unknown[]; depth: number }) {
       </button>
     ) : null;
 
+  // Items that carry a playable video (search results): 2×2 preview grid with link buttons.
+  const cards = list.map(mediaCardOf);
+  if (cards.every((c) => c !== null)) {
+    return <MediaCardGrid cards={cards.filter((c) => c !== null)} />;
+  }
+
   // Gallery of media links.
   if (visible.every((v) => mediaOf(v))) {
     return (
@@ -296,15 +305,34 @@ function ArrayView({ items, depth }: { items: unknown[]; depth: number }) {
 }
 
 function ObjectView({ obj, depth }: { obj: PlainObject; depth: number }) {
+  const card = depth === 0 ? mediaCardOf(obj) : null;
+  if (card) return <MediaCardView card={card} large />;
   const o = withoutMeta(obj);
   const top = depth === 0;
   const entries = Object.entries(o).filter(([, v]) => !isEmpty(v));
 
   const heroKey = top ? primaryTextKey(o) : null;
-  const heroMedia = top ? entries.filter(([, v]) => mediaOf(v)) : [];
+  const heroSeen = new Set<string>();
+  const heroMedia = top
+    ? entries.filter(([k, v]) => {
+        const kind = mediaOf(v, k);
+        // Key-only hints (e.g. "avatar") stay small in the field list; videos always get a player.
+        if (!kind || (kind === "image" && !mediaOf(v))) return false;
+        const url = String(v).trim();
+        if (heroSeen.has(url)) return false;
+        heroSeen.add(url);
+        return true;
+      })
+    : [];
   const heroMediaKeys = new Set(heroMedia.map(([k]) => k));
 
-  const rest = entries.filter(([k]) => k !== heroKey && !heroMediaKeys.has(k));
+  const rest = entries.filter(
+    ([k, v]) =>
+      k !== heroKey &&
+      !heroMediaKeys.has(k) &&
+      // A second copy of a video already playing above (e.g. download_url = video_url).
+      !(typeof v === "string" && heroSeen.has(v.trim()) && !/download/i.test(k)),
+  );
   const stats = top
     ? rest.filter(([k, v]) => typeof v === "number" && !/(^id$|_id$|Id$|code$)/i.test(k))
     : [];
@@ -317,7 +345,7 @@ function ObjectView({ obj, depth }: { obj: PlainObject; depth: number }) {
   return (
     <>
       {heroMedia.map(([k, v]) => (
-        <MediaFrame key={k} kind={mediaOf(v) ?? "image"} url={String(v).trim()} large />
+        <MediaFrame key={k} kind={mediaOf(v, k) ?? "image"} url={String(v).trim()} large />
       ))}
 
       {heroKey && <HeroText text={String(o[heroKey])} label={humanizeKey(heroKey)} />}
@@ -338,7 +366,7 @@ function ObjectView({ obj, depth }: { obj: PlainObject; depth: number }) {
           )}
         >
           {fields.map(([k, v]) => (
-            <FieldRow key={k} label={humanizeKey(k)} value={v} />
+            <FieldRow key={k} fieldKey={k} label={humanizeKey(k)} value={v} />
           ))}
         </dl>
       )}
@@ -414,9 +442,10 @@ function StatTile({ label, value }: { label: string; value: number | boolean }) 
   );
 }
 
-function FieldRow({ label, value }: { label: string; value: unknown }) {
+function FieldRow({ fieldKey, label, value }: { fieldKey: string; label: string; value: unknown }) {
   const text = formatPrimitive(value);
-  const media = mediaOf(value);
+  const media = mediaOf(value, fieldKey);
+  const linkButton = typeof value === "string" && isUrl(value) && !media;
   const block =
     media === "audio" ||
     media === "video" ||
@@ -430,13 +459,22 @@ function FieldRow({ label, value }: { label: string; value: unknown }) {
     >
       <dt className="shrink-0 text-xs text-muted-foreground">{label}</dt>
       <dd className={cn("min-w-0", block ? "leading-relaxed" : "text-right")}>
-        <InlineValue value={value} />
+        {linkButton ? (
+          <Button asChild variant="glass" size="sm" className="h-8 max-w-full px-3 text-xs">
+            <a href={String(value).trim()} target="_blank" rel="noreferrer">
+              <ExternalLink />
+              <span className="truncate">{linkLabel(fieldKey)}</span>
+            </a>
+          </Button>
+        ) : (
+          <InlineValue value={value} kind={media} />
+        )}
       </dd>
     </div>
   );
 }
 
-function InlineValue({ value }: { value: unknown }) {
+function InlineValue({ value, kind }: { value: unknown; kind?: MediaKind | null }) {
   if (typeof value === "boolean") {
     return (
       <span
@@ -451,7 +489,7 @@ function InlineValue({ value }: { value: unknown }) {
     );
   }
   if (typeof value === "string") {
-    const media = mediaOf(value);
+    const media = kind ?? mediaOf(value);
     const url = value.trim();
     if (media === "image") {
       return (

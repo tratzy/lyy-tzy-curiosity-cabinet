@@ -192,6 +192,11 @@ const LABELS: Record<string, string> = {
   email: "Email",
   phone: "Telepon",
   address: "Alamat",
+  query: "Kata kunci",
+  keyword: "Kata kunci",
+  time_taken: "Waktu proses",
+  data: "Hasil",
+  results: "Hasil",
 };
 
 /** "partOfSpeech" → "Jenis kata", "country_code" → "Kode negara", "fooBar_baz" → "Foo bar baz". */
@@ -211,8 +216,199 @@ export function isUrl(v: string): boolean {
   return /^https?:\/\/\S+$/i.test(v.trim());
 }
 
-export function mediaOf(v: unknown): MediaKind | null {
-  return typeof v === "string" ? mediaKindFromUrl(v.trim()) : null;
+/** Sites whose links open a page (watch page, profile, template editor), never a playable file. */
+const PAGE_HOSTS = new Set([
+  "youtube.com",
+  "youtu.be",
+  "tiktok.com",
+  "vt.tiktok.com",
+  "instagram.com",
+  "facebook.com",
+  "fb.watch",
+  "twitter.com",
+  "x.com",
+  "capcut.com",
+  "pinterest.com",
+  "pin.it",
+  "spotify.com",
+  "open.spotify.com",
+]);
+
+function isPageHost(hostname: string): boolean {
+  return PAGE_HOSTS.has(hostname.toLowerCase().replace(/^(www|m)\./, ""));
+}
+
+/**
+ * What kind of media a value is, if any. Looks at the link itself (file extension anywhere in the
+ * path, `mime_type=video_mp4` style hints) and, when given, the field name (`thumbnail`, `video_url`…).
+ */
+export function mediaOf(v: unknown, key?: string): MediaKind | null {
+  if (typeof v !== "string") return null;
+  const s = v.trim();
+  const direct = mediaKindFromUrl(s);
+  if (direct) return direct;
+  if (!isUrl(s)) return null;
+  let u: URL;
+  try {
+    u = new URL(s);
+  } catch {
+    return null;
+  }
+  const where = `${u.pathname}${u.search}`.toLowerCase();
+  if (/mime_type=video|\.(mp4|webm|mov)(\/|$|[?&#])/.test(where)) return "video";
+  if (/mime_type=audio|\.(mp3|m4a|wav|ogg|aac)(\/|$|[?&#])/.test(where)) return "audio";
+  if (/mime_type=image|\.(png|jpe?g|webp|gif|avif)(\/|$|[?&#~])/.test(where)) return "image";
+  if (!key || isPageHost(u.hostname)) return null;
+  const k = key.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
+  if (/(thumb|cover|image|img|avatar|poster|photo|picture|banner|icon)/.test(k)) return "image";
+  if (/(^|_)(mp4|nowm|nowatermark|no_watermark|wm|hd|sd|play|video)(_|$)/.test(k)) return "video";
+  if (/(^|_)(mp3|audio|music|sound)(_|$)/.test(k)) return "audio";
+  return null;
+}
+
+/* ------------------------------------------------------------------ *
+ * Media cards: an item with a playable video plus its details (CapCut, TikTok, … search results)
+ * ------------------------------------------------------------------ */
+
+export type MediaCardLink = { key: string; label: string; url: string };
+export type MediaCardStat = { key: string; label: string; value: number };
+export type MediaCard = {
+  video: string;
+  poster: string | null;
+  title: string | null;
+  author: { name: string | null; avatar: string | null } | null;
+  duration: number | null;
+  stats: MediaCardStat[];
+  links: MediaCardLink[];
+};
+
+const TITLE_KEYS = ["title", "caption", "desc", "description", "name", "text", "judul"];
+const AUTHOR_KEYS = ["author", "user", "creator", "owner", "uploader", "channel", "profile"];
+const ID_LIKE = /(^id$|_id$|Id$|^code$|^uid$|^cid$|^aweme_id$)/i;
+
+const STAT_LABELS: Record<string, string> = {
+  usage_amount: "Dipakai",
+  usage: "Dipakai",
+  use_count: "Dipakai",
+  play_amount: "Diputar",
+  play_count: "Diputar",
+  plays: "Diputar",
+  views: "Dilihat",
+  view_count: "Dilihat",
+  like_count: "Suka",
+  likes: "Suka",
+  digg_count: "Suka",
+  comment_count: "Komentar",
+  comments: "Komentar",
+  share_count: "Dibagikan",
+  shares: "Dibagikan",
+  download_count: "Diunduh",
+  favorite_count: "Disimpan",
+  collect_count: "Disimpan",
+};
+
+/** Button text for a link field: `template_url` → "Pakai template", `download_url` → "Unduh". */
+export function linkLabel(key: string): string {
+  const k = key.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
+  if (k.includes("template")) return "Pakai template";
+  if (k.includes("download") || k.includes("nowm") || k.includes("no_watermark")) return "Unduh";
+  if (k.includes("share")) return "Bagikan";
+  if (k.includes("music") || k.includes("audio") || k.includes("sound")) return "Audio";
+  if (k.includes("source") || k.includes("original")) return "Sumber";
+  if (k.includes("hd")) return "Versi HD";
+  if (/^(url|link|href|web_?url|page_?url)$/.test(k)) return "Buka";
+  const base = k.replace(/(^|_)(url|link|href)$/, "").replace(/_+$/, "");
+  return base ? humanizeKey(base) : "Buka";
+}
+
+export function statLabel(key: string): string {
+  const k = key.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
+  return STAT_LABELS[k] ?? humanizeKey(key);
+}
+
+/** Seconds as "0:10" / "1:02:03" (values that look like milliseconds are converted). */
+export function formatDuration(value: number, key = ""): string {
+  let sec = /ms|milli/i.test(key) || value > 60 * 60 * 6 ? value / 1000 : value;
+  sec = Math.max(0, Math.round(sec));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const ss = String(sec % 60).padStart(2, "0");
+  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${ss}` : `${m}:${ss}`;
+}
+
+/** 9506013 → "9,5 jt", 214787 → "214,8 rb". */
+export function formatCompact(value: number): string {
+  return new Intl.NumberFormat("id-ID", { notation: "compact", maximumFractionDigits: 1 }).format(
+    value,
+  );
+}
+
+/** Reads an item with a playable video into a card; null when the item has no video. */
+export function mediaCardOf(value: unknown): MediaCard | null {
+  if (!isPlainObject(value)) return null;
+  const entries = Object.entries(value).filter(([, v]) => !isEmpty(v));
+  const videos = entries.filter(([k, v]) => mediaOf(v, k) === "video");
+  if (videos.length === 0) return null;
+  const preferred =
+    videos.find(([k]) => /video|play|nowm|hd/i.test(k) && !/download/i.test(k)) ?? videos[0];
+  const video = String(preferred?.[1] ?? "").trim();
+  if (!video) return null;
+
+  const images = entries.filter(([k, v]) => mediaOf(v, k) === "image");
+  const posterEntry =
+    images.find(([k]) => /thumb|cover|poster|image|img|preview/i.test(k) && !/avatar|icon/i.test(k)) ??
+    images.find(([k]) => !/avatar|icon/i.test(k));
+  const poster = posterEntry ? String(posterEntry[1]).trim() : null;
+
+  const titleEntry = TITLE_KEYS.map((t) =>
+    entries.find(([k, v]) => k.toLowerCase() === t && typeof v === "string" && !isUrl(v)),
+  ).find(Boolean);
+  const title = titleEntry ? String(titleEntry[1]).trim() : null;
+
+  let author: MediaCard["author"] = null;
+  const authorEntry = entries.find(([k]) => AUTHOR_KEYS.includes(k.toLowerCase()));
+  if (authorEntry) {
+    const a = authorEntry[1];
+    if (typeof a === "string" && !isUrl(a)) author = { name: a.trim(), avatar: null };
+    else if (isPlainObject(a)) {
+      const name = ["name", "nickname", "nick_name", "username", "unique_id", "display_name"]
+        .map((n) => a[n])
+        .find((n) => typeof n === "string" && n.trim());
+      const avatar = Object.entries(a).find(([k, v]) => mediaOf(v, k) === "image")?.[1];
+      author = {
+        name: typeof name === "string" ? name.trim() : null,
+        avatar: typeof avatar === "string" ? avatar.trim() : null,
+      };
+    }
+  }
+
+  const durationEntry = entries.find(
+    ([k, v]) => typeof v === "number" && /^(duration|dur|length|video_duration)(_?ms|_?sec)?$/i.test(k),
+  );
+  const duration = durationEntry ? (durationEntry[1] as number) : null;
+
+  const stats = entries
+    .filter(
+      ([k, v]) => typeof v === "number" && !ID_LIKE.test(k) && k !== durationEntry?.[0],
+    )
+    .map(([k, v]) => ({ key: k, label: statLabel(k), value: v as number }));
+
+  const skip = new Set([posterEntry?.[0], preferred?.[0]]);
+  const seen = new Set<string>([video]);
+  const links: MediaCardLink[] = [];
+  for (const [k, v] of entries) {
+    if (skip.has(k) || typeof v !== "string" || !isUrl(v)) continue;
+    const url = v.trim();
+    const kind = mediaOf(v, k);
+    if (kind === "image") continue;
+    // The same file as the preview only earns a button when it is meant for downloading.
+    if (url === video && !/download|nowm|save/i.test(k)) continue;
+    if (url !== video && seen.has(url)) continue;
+    seen.add(url);
+    links.push({ key: k, label: linkLabel(k), url });
+  }
+
+  return { video, poster, title, author, duration, stats, links };
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?)?$/;
