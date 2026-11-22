@@ -79,7 +79,11 @@ export function buildUpstreamRequest(
   );
 
   const method = (tool.method || "GET").toUpperCase();
-  const headers: Record<string, string> = { Accept: "*/*" };
+  const headers: Record<string, string> = {
+    Accept: "*/*",
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  };
   const init: RequestInit = { method, headers, redirect: "follow" };
 
   const sendAsQuery = method === "GET" || method === "DELETE" || tool.body_type === "query";
