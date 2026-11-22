@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { buildUpstreamRequest, findMediaUrls } from "@/lib/tool-request";
+import {
+  buildUpstreamRequest,
+  canSendFiles,
+  findMediaUrls,
+  imageSendMode,
+} from "@/lib/tool-request";
 
 describe("buildUpstreamRequest", () => {
   it("fills {placeholders} in the endpoint path and does not repeat them in the query", () => {
@@ -79,5 +84,47 @@ describe("findMediaUrls", () => {
       { url: "https://cdn.x.com/a.png", kind: "image" },
       { url: "https://cdn.x.com/b.mp4", kind: "video" },
     ]);
+  });
+});
+
+describe("image inputs", () => {
+  it("sends uploaded images as multipart form data alongside text inputs", () => {
+    const blob = new Blob(["img"], { type: "image/png" });
+    const { init } = buildUpstreamRequest(
+      { method: "POST", endpoint: "https://api.example.com/run", body_type: "json" },
+      { style: "anime" },
+      {},
+      { image: { blob, filename: "image.png" } },
+    );
+    expect(init.body).toBeInstanceOf(FormData);
+    const form = init.body as FormData;
+    expect(form.get("style")).toBe("anime");
+    expect((form.get("image") as File).name).toBe("image.png");
+    expect((init.headers as Record<string, string>)["Content-Type"]).toBeUndefined();
+  });
+
+  it("refuses to attach files to GET tools", () => {
+    const blob = new Blob(["img"], { type: "image/png" });
+    expect(() =>
+      buildUpstreamRequest(
+        { method: "GET", endpoint: "https://api.example.com/run", body_type: "json" },
+        {},
+        {},
+        { image: { blob, filename: "image.png" } },
+      ),
+    ).toThrow();
+  });
+
+  it("only POST/PUT/PATCH tools with a json or form body can receive files", () => {
+    expect(canSendFiles({ method: "POST", body_type: "json" })).toBe(true);
+    expect(canSendFiles({ method: "PUT", body_type: "form" })).toBe(true);
+    expect(canSendFiles({ method: "GET", body_type: "json" })).toBe(false);
+    expect(canSendFiles({ method: "DELETE", body_type: "json" })).toBe(false);
+    expect(canSendFiles({ method: "POST", body_type: "query" })).toBe(false);
+  });
+
+  it("sends images as a temporary link unless the admin picks file", () => {
+    expect(imageSendMode({})).toBe("url");
+    expect(imageSendMode({ send_as: "file" })).toBe("file");
   });
 });

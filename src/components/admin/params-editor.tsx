@@ -3,7 +3,13 @@ import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { PARAM_TYPES, type ParamType, type ToolParam } from "@/lib/tool-request";
+import {
+  imageSendMode,
+  PARAM_TYPES,
+  type ImageSendMode,
+  type ParamType,
+  type ToolParam,
+} from "@/lib/tool-request";
 
 const TYPE_LABEL: Record<ParamType, string> = {
   text: "Teks",
@@ -17,9 +23,12 @@ const TYPE_LABEL: Record<ParamType, string> = {
 export function ParamsEditor({
   value,
   onChange,
+  filesAllowed = true,
 }: {
   value: ToolParam[];
   onChange: (v: ToolParam[]) => void;
+  /** False when the tool's method/body cannot carry a file (GET, DELETE, query). */
+  filesAllowed?: boolean;
 }) {
   const update = (i: number, patch: Partial<ToolParam>) =>
     onChange(value.map((p, idx) => (idx === i ? { ...p, ...patch } : p)));
@@ -59,10 +68,35 @@ export function ParamsEditor({
             <Input
               value={p.placeholder ?? ""}
               onChange={(e) => update(i, { placeholder: e.target.value })}
-              placeholder="Placeholder"
+              placeholder={p.type === "image" ? "Petunjuk (mis. Pilih foto wajah)" : "Placeholder"}
               aria-label="Placeholder"
             />
           </div>
+          {p.type === "image" && (
+            <div className="space-y-1.5">
+              <select
+                value={imageSendMode(p)}
+                onChange={(e) => update(i, { send_as: e.target.value as ImageSendMode })}
+                className="h-9 w-full rounded-md border border-input bg-background px-2 text-sm text-foreground"
+                aria-label="Cara kirim gambar"
+              >
+                <option value="url">Kirim sebagai link gambar sementara</option>
+                <option value="file">Kirim sebagai file langsung</option>
+              </select>
+              {imageSendMode(p) === "file" && !filesAllowed ? (
+                <p className="text-xs text-warning">
+                  Metode GET/DELETE atau body "query" tidak bisa membawa file, jadi gambar akan
+                  dikirim sebagai link. Pakai POST dengan body JSON/form untuk mengirim file.
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  {imageSendMode(p) === "file"
+                    ? "Gambar dikirim sebagai file (multipart/form-data) dengan nama field = key."
+                    : "Gambar diunggah dulu, lalu link-nya (berlaku 1 jam) dikirim sebagai nilai key."}
+                </p>
+              )}
+            </div>
+          )}
           {p.type === "select" && (
             <Input
               value={(p.options ?? []).join(", ")}
@@ -79,13 +113,17 @@ export function ParamsEditor({
             />
           )}
           <div className="flex items-center justify-between gap-2">
-            <Input
-              value={p.default ?? ""}
-              onChange={(e) => update(i, { default: e.target.value })}
-              placeholder="Nilai default (opsional)"
-              className="h-8 max-w-[60%] text-xs"
-              aria-label="Nilai default"
-            />
+            {p.type === "image" ? (
+              <span />
+            ) : (
+              <Input
+                value={p.default ?? ""}
+                onChange={(e) => update(i, { default: e.target.value })}
+                placeholder="Nilai default (opsional)"
+                className="h-8 max-w-[60%] text-xs"
+                aria-label="Nilai default"
+              />
+            )}
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Switch

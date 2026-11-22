@@ -24,3 +24,4 @@
 - [x] Tema kaca / liquid glass di seluruh web
 - [x] Hapus semua blur kecuali bilah atas, banner video, dan bilah bawah
 - [x] Menu hamburger kanan atas: Dashboard, Category (daftar kategori + halaman kategori), Admin Panel
+- [x] Parameter input upload gambar (kirim sebagai link sementara atau file langsung)

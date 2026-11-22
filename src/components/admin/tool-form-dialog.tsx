@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Json, TablesInsert } from "@/integrations/supabase/types";
 import {
   BODY_TYPES,
+  canSendFiles,
   endpointPlaceholders,
   HTTP_METHODS,
   RESPONSE_TYPES,
@@ -461,7 +462,11 @@ export function ToolFormDialog({
                 </Section>
 
                 <Section title="Parameter input">
-                  <ParamsEditor value={form.params} onChange={(v) => set("params", v)} />
+                  <ParamsEditor
+                    value={form.params}
+                    onChange={(v) => set("params", v)}
+                    filesAllowed={canSendFiles(form)}
+                  />
                 </Section>
 
                 <Section title="Header rahasia (opsional)">

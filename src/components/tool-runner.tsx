@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Play, RotateCcw, Sparkles, TriangleAlert } from "lucide-react";
 
+import { ImageInput } from "@/components/image-input";
 import { ToolLoading } from "@/components/tool-loading";
 import { ToolResult, type RunResult } from "@/components/tool-result";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,8 @@ export function ToolRunner({ tool }: { tool: Tool }) {
       params.map((p) => [p.key, p.default ?? (p.type === "select" ? (p.options?.[0] ?? "") : "")]),
     ),
   );
+  const [files, setFiles] = useState<Record<string, File | null>>({});
+  const [missing, setMissing] = useState<Set<string>>(new Set());
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<RunError | null>(null);
@@ -56,6 +59,18 @@ export function ToolRunner({ tool }: { tool: Tool }) {
 
   const run = async (e?: React.FormEvent) => {
     e?.preventDefault();
+    const imageParams = params.filter((p) => p.type === "image");
+    const lacking = imageParams.filter((p) => p.required && !files[p.key]).map((p) => p.key);
+    setMissing(new Set(lacking));
+    if (lacking.length > 0) {
+      const first = imageParams.find((p) => p.key === lacking[0]);
+      setResult(null);
+      setError({
+        title: "Gambar belum dipilih",
+        detail: `Pilih gambar untuk "${first?.label || first?.key}" dulu.`,
+      });
+      return;
+    }
     setRunning(true);
     setError(null);
     setResult(null);
@@ -66,11 +81,27 @@ export function ToolRunner({ tool }: { tool: Tool }) {
     }
     const started = performance.now();
     try {
-      const res = await fetch("/api/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: tool.slug, params: values }),
+      const textValues = Object.fromEntries(
+        Object.entries(values).filter(([key]) => !imageParams.some((p) => p.key === key)),
+      );
+      const chosen = imageParams.flatMap((p) => {
+        const f = files[p.key];
+        return f ? [[p.key, f] as const] : [];
       });
+      let res: Response;
+      if (chosen.length > 0) {
+        const form = new FormData();
+        form.append("slug", tool.slug);
+        form.append("params", JSON.stringify(textValues));
+        for (const [key, f] of chosen) form.append(`file:${key}`, f, f.name || key);
+        res = await fetch("/api/run", { method: "POST", body: form });
+      } else {
+        res = await fetch("/api/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug: tool.slug, params: textValues }),
+        });
+      }
       const contentType = res.headers.get("content-type") ?? "";
       const forced = tool.response_type;
 
@@ -155,7 +186,25 @@ export function ToolRunner({ tool }: { tool: Tool }) {
               {p.label || p.key}
               {p.required && <span className="ml-1 text-accent">*</span>}
             </Label>
-            {p.type === "textarea" ? (
+            {p.type === "image" ? (
+              <ImageInput
+                id={`p-${p.key}`}
+                value={files[p.key] ?? null}
+                hint={p.placeholder}
+                invalid={missing.has(p.key)}
+                onChange={(f) => {
+                  setFiles((cur) => ({ ...cur, [p.key]: f }));
+                  if (f) {
+                    setError((cur) => (cur?.title === "Gambar belum dipilih" ? null : cur));
+                    setMissing((cur) => {
+                      const next = new Set(cur);
+                      next.delete(p.key);
+                      return next;
+                    });
+                  }
+                }}
+              />
+            ) : p.type === "textarea" ? (
               <Textarea
                 id={`p-${p.key}`}
                 value={values[p.key] ?? ""}
